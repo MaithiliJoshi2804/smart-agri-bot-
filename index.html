@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smart Agri-Bot | Maithili Joshi</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --soil:   #3d2b1f;
+    --leaf:   #2d6a2f;
+    --leaf-lt:#4caf50;
+    --sky:    #e8f5e9;
+    --cream:  #fafaf7;
+    --ink:    #1a1a1a;
+    --muted:  #5a6672;
+    --accent: #f5a623;   /* harvest gold — the signature */
+    --border: #d4e0c8;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 40px;
+    background: rgba(250,250,247,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-weight: 700; font-size: 14px; color: var(--leaf); letter-spacing: .5px; }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { text-decoration: none; font-size: 13px; color: var(--muted); transition: color .2s; }
+  .nav-links a:hover { color: var(--leaf); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 100px 80px 60px;
+    gap: 60px;
+    background:
+      radial-gradient(ellipse 60% 60% at 70% 50%, rgba(45,106,47,.07) 0%, transparent 70%),
+      var(--cream);
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    color: var(--leaf);
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .hero-eyebrow span {
+    width: 28px; height: 2px; background: var(--leaf); display: inline-block;
+  }
+  h1 {
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--soil);
+    margin-bottom: 20px;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--leaf);
+  }
+  .hero-desc {
+    font-size: 16px; color: var(--muted); max-width: 440px;
+    margin-bottom: 36px; line-height: 1.75;
+  }
+  .hero-badges {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 12px; font-weight: 600;
+    border: 1.5px solid;
+  }
+  .badge-green  { border-color: var(--leaf-lt); color: var(--leaf); background: rgba(76,175,80,.08); }
+  .badge-gold   { border-color: var(--accent);  color: #a06000;    background: rgba(245,166,35,.1); }
+  .badge-soil   { border-color: var(--soil);    color: var(--soil); background: rgba(61,43,31,.07);}
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: all .2s;
+  }
+  .btn-primary { background: var(--leaf); color: #fff; }
+  .btn-primary:hover { background: #235025; transform: translateY(-1px); }
+  .btn-ghost  { border: 1.5px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--leaf); color: var(--leaf); }
+  .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* ── HERO VISUAL ── */
+  .hero-visual {
+    display: flex; justify-content: center; align-items: center;
+  }
+  .agri-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%; max-width: 380px;
+    box-shadow: 0 20px 60px rgba(45,106,47,.10);
+  }
+  .card-top {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px;
+  }
+  .card-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--leaf), #81c784);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .card-label { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--soil); }
+
+  .sensor-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .sensor-box {
+    background: var(--sky);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .sensor-label { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+  .sensor-val   { font-size: 18px; font-weight: 700; color: var(--leaf); }
+  .sensor-unit  { font-size: 10px; color: var(--muted); }
+
+  .status-bar {
+    background: var(--sky);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--leaf-lt); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+  .status-text { font-size: 12px; font-weight: 600; color: var(--leaf); }
+
+  /* ── SECTION BASE ── */
+  section { padding: 80px 80px; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--leaf); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  h2 { font-size: clamp(28px, 3.5vw, 40px); font-weight: 700; color: var(--soil); margin-bottom: 16px; }
+  .section-intro { font-size: 16px; color: var(--muted); max-width: 560px; line-height: 1.75; margin-bottom: 48px; }
+
+  /* ── HIGHLIGHTS (stats) ── */
+  .highlights { background: var(--soil); }
+  .highlights h2 { color: #fff; }
+  .highlights .section-label { color: var(--accent); }
+  .highlights .section-intro { color: rgba(255,255,255,.6); }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .stat-box {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    padding: 36px 32px;
+    border-radius: 12px;
+  }
+  .stat-num  { font-size: 48px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+  .stat-desc { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.5; }
+
+  /* ── HOW IT WORKS ── */
+  .how { background: #fff; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .step {
+    padding: 28px 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    position: relative;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .step:hover { border-color: var(--leaf-lt); box-shadow: 0 8px 30px rgba(45,106,47,.1); }
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .step-icon { font-size: 28px; margin-bottom: 12px; }
+  .step h3 { font-size: 15px; font-weight: 700; color: var(--soil); margin-bottom: 8px; }
+  .step p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── TECH STACK ── */
+  .tech { background: var(--sky); }
+  .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tech-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .tech-category { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--leaf); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .tech-items { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tech-item {
+    background: var(--sky); border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; color: var(--soil);
+  }
+
+  /* ── PUBLICATION ── */
+  .publication {
+    background: linear-gradient(135deg, var(--leaf) 0%, #1b5e20 100%);
+    color: #fff;
+    padding: 60px 80px;
+    text-align: center;
+  }
+  .pub-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,.6); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .publication h2 { font-size: 32px; color: #fff; margin-bottom: 16px; }
+  .publication p { font-size: 15px; color: rgba(255,255,255,.75); max-width: 540px; margin: 0 auto 32px; line-height: 1.75; }
+  .pub-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+    padding: 10px 20px; border-radius: 99px;
+    font-size: 13px; font-weight: 600; color: #fff;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--soil); color: rgba(255,255,255,.5);
+    text-align: center; padding: 28px 40px;
+    font-size: 12px; font-family: 'JetBrains Mono', monospace;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:900px){
+    .hero { grid-template-columns: 1fr; padding: 90px 28px 60px; }
+    .hero-visual { display: none; }
+    section { padding: 60px 28px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .tech-grid { grid-template-columns: 1fr 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    nav { padding: 14px 24px; }
+    .nav-links { display: none; }
+    .publication { padding: 50px 28px; }
+  }
+  @media(max-width:560px){
+    .steps { grid-template-columns: 1fr; }
+    .tech-grid { grid-template-columns: 1fr; }
+  }
+
+  @media(prefers-reduced-motion: reduce){ .pulse { animation: none; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🌾 Smart Agri-Bot</div>
+  <ul class="nav-links">
+    <li><a href="#highlights">Highlights</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#tech">Tech Stack</a></li>
+    <li><a href="#publication">Publication</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-eyebrow"><span></span>IEEE ICCSP 2025 — Published Research</div>
+    <h1>Autonomous<br/><em>Smart Agri-Bot</em><br/>for Precision Farming</h1>
+    <p class="hero-desc">
+      An IoT-enabled agricultural robot that integrates embedded sensors, AI decision-making, and autonomous navigation to automate irrigation and precision seed sowing in real time.
+    </p>
+    <div class="hero-badges">
+      <span class="badge badge-gold">🏆 1st Place — College Competition</span>
+      <span class="badge badge-green">📄 IEEE Published</span>
+      <span class="badge badge-soil">🤖 AI + IoT</span>
+    </div>
+    <div class="hero-cta">
+      <a href="https://linkedin.com/in/maithilijoshi28" class="btn btn-primary" target="_blank">Connect on LinkedIn ↗</a>
+      <a href="#how" class="btn btn-ghost">See How It Works</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="agri-card">
+      <div class="card-top">
+        <div class="card-icon">🌱</div>
+        <div>
+          <div class="card-label">LIVE SENSOR FEED</div>
+          <div class="card-title">Smart Agri-Bot Dashboard</div>
+        </div>
+      </div>
+      <div class="sensor-grid">
+        <div class="sensor-box">
+          <div class="sensor-label">SOIL MOISTURE</div>
+          <div class="sensor-val">68<span class="sensor-unit">%</span></div>
+        </div>
+        <div class="sensor-box">
+          <div class="sensor-label">TEMPERATURE</div>
+          <div class="sensor-val">27<span class="sensor-unit">°C</span></div>
+        </div>
+        <div class="sensor-box">
+          <div class="sensor-label">SEED DEPTH</div>
+          <div class="sensor-val">3.2<span class="sensor-unit">cm</span></div>
+        </div>
+        <div class="sensor-box">
+          <div class="sensor-label">IRRIGATION</div>
+          <div class="sensor-val" style="color:var(--accent)">AUTO</div>
+        </div>
+      </div>
+      <div class="status-bar">
+        <div class="pulse"></div>
+        <div class="status-text">AI Decision Engine — Active</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS -->
+<section class="highlights" id="highlights">
+  <div class="section-label">Impact</div>
+  <h2>Project Highlights</h2>
+  <p class="section-intro">Built, tested, and validated through multiple real-world field cycles — from sensor calibration to autonomous deployment.</p>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-num">1st</div>
+      <div class="stat-desc">Place at college-level robotics & AI competition</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">IEEE</div>
+      <div class="stat-desc">Peer-reviewed paper published at ICCSP 2025 conference</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">Real‑Time</div>
+      <div class="stat-desc">Live sensor data drove all AI irrigation & sowing decisions</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label">Architecture</div>
+  <h2>How It Works</h2>
+  <p class="section-intro">Four tightly integrated stages — from raw sensor input to physical autonomous action in the field.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">📡</div>
+      <h3>Sensor Data Collection</h3>
+      <p>Embedded sensors (soil moisture, temperature, humidity) continuously stream live field data to the microcontroller.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">🧠</div>
+      <h3>AI Decision Engine</h3>
+      <p>Custom AI algorithms analyze real-time sensor readings and dynamically decide when and how much to irrigate, and optimal seed depth.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">🤖</div>
+      <h3>Autonomous Actuation</h3>
+      <p>Motor drivers and actuators execute irrigation commands and precision seed sowing without any manual intervention.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">🔄</div>
+      <h3>Feedback & Iteration</h3>
+      <p>Post-action sensor readings feed back into the system, enabling the bot to self-correct and improve across multiple field cycles.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="tech" id="tech">
+  <div class="section-label">Technology</div>
+  <h2>Tech Stack</h2>
+  <p class="section-intro">A full-stack embedded system spanning hardware, AI logic, and real-time decision-making.</p>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-category">Hardware</div>
+      <div class="tech-items">
+        <span class="tech-item">Microcontroller</span>
+        <span class="tech-item">Motor Driver</span>
+        <span class="tech-item">Actuators</span>
+        <span class="tech-item">Chassis & Frame</span>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-category">Sensors</div>
+      <div class="tech-items">
+        <span class="tech-item">Soil Moisture</span>
+        <span class="tech-item">Temperature</span>
+        <span class="tech-item">Humidity</span>
+        <span class="tech-item">Depth Sensor</span>
+      </div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-category">AI / Software</div>
+      <div class="tech-items">
+        <span class="tech-item">Decision Algorithms</span>
+        <span class="tech-item">Real-Time Logic</span>
+        <span class="tech-item">Python</span>
+        <span class="tech-item">Embedded C/C++</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICATION -->
+<section class="publication" id="publication">
+  <div class="pub-eyebrow">Research Output</div>
+  <h2>IEEE ICCSP 2025 — Published</h2>
+  <p>A peer-reviewed conference paper documenting the full system architecture, AI-integrated IoT pipeline, experimental methodology, and field results was published at IEEE ICCSP 2025.</p>
+  <div class="pub-chip">📄 Co-authored Research Paper — ICCSP 2025</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  Built by <a href="https://linkedin.com/in/maithilijoshi28" target="_blank">Maithili Sadashiv Joshi</a> &nbsp;·&nbsp; KLE Technological University &nbsp;·&nbsp; IEEE ICCSP 2025
+</footer>
+
+</body>
+</html>
